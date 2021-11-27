@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "bose_soundbar_volume_display"
+version = "0.1.0"
+description = "query upnp device, volume display on some screen"
+authors = ["dominicmai <dr.dosn@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+async-upnp-client = "^0.22.12"
+upnpclient = "^1.0.3"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
