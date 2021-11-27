@@ -14,8 +14,7 @@ import upnpclient as upnpclient
 from async_upnp_client import UpnpFactory
 from async_upnp_client.aiohttp import AiohttpRequester
 
-from app.displays import Dtext
-from displays import DisplayWindows
+from displays import DisplayWindows, DisplayPi, Dtext
 
 
 class UpnpRequester:
@@ -96,7 +95,12 @@ class VolumeCtrl:
         # self.requester = FakeRequester(loop, self.volume_callback)
 
         if os.name == 'nt':
+            print("Windows detected")
             self.display = DisplayWindows(loop)
+        elif os.name == 'posix':
+            print("Linux detected")
+            self.display = DisplayPi(loop)
+
         loop.run_forever()
         loop.close()
 

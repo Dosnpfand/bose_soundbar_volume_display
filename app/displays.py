@@ -1,7 +1,10 @@
 import asyncio
+import time
 import tkinter
 import tkinter as tk
 from collections import namedtuple
+from tkinter import ttk
+from tkinter.font import Font
 
 Dtext = namedtuple('Dtext', 'text delay')
 
@@ -24,6 +27,29 @@ class AsyncTK(tk.Tk):
             task.cancel()
         self.loop.stop()
         self.destroy()
+
+
+class DisplayPi(AsyncTK):
+
+    def __init__(self, loop):
+        super().__init__(loop)
+        self.attributes("-fullscreen", True)
+        self.configure(background='black')
+
+        self.bind("<Escape>", quit)
+        self.bind("x", quit)
+
+        def show_time():
+            txt.set(time.strftime("%H:%M:%S"))
+            self.after(1000, show_time)
+
+        self.after(1000, show_time)
+
+        fnt = Font(family='Helvetica', size=128, weight='bold')
+        txt = tkinter.StringVar()
+        txt.set(time.strftime("%H:%M:%S"))
+        lbl = ttk.Label(self, textvariable=txt, font=fnt, foreground="green", background="black")
+        lbl.place(relx=0.5, rely=0.5, anchor="CENTER")
 
 
 class DisplayWindows(AsyncTK):
