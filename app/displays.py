@@ -5,11 +5,15 @@ import tkinter as tk
 from collections import namedtuple
 from tkinter import ttk
 from tkinter.font import Font
+from typing import Optional
 
 Dtext = namedtuple('Dtext', 'text delay')
 
 
 class AsyncTK(tk.Tk):
+    """
+    Helper class that replaces the tkinter mainlool by an async powered version.
+    """
 
     def __init__(self, loop):
         super().__init__()
@@ -33,23 +37,47 @@ class DisplayPi(AsyncTK):
 
     def __init__(self, loop):
         super().__init__(loop)
+        self.tasks.append(loop.create_task(self._updater(0.05)))
+
         self.attributes("-fullscreen", True)
         self.configure(background='black')
+        self.config(cursor="none")
 
         self.bind("<Escape>", quit)
         self.bind("x", quit)
 
-        def show_time():
-            txt.set(time.strftime("%H:%M:%S"))
-            self.after(1000, show_time)
-
-        self.after(1000, show_time)
+        self.startup_text: Dtext = Dtext('Pi', 2)
+        self.text: Optional[Dtext] = None
 
         fnt = Font(family='Helvetica', size=128, weight='bold')
-        txt = tkinter.StringVar()
-        txt.set(time.strftime("%H:%M:%S"))
-        lbl = ttk.Label(self, textvariable=txt, font=fnt, foreground="green", background="black")
-        lbl.place(relx=0.5, rely=0.5, anchor="CENTER")
+        # txt = tkinter.StringVar()
+        self.label = ttk.Label(self, text='', font=fnt, foreground="green", background="black")
+        self.place(relx=0.5, rely=0.5, anchor="center")
+        # self.label = txt
+        # self.label.set("Drrsch.")
+
+    def set_text(self, s: Dtext):
+        print(s)
+        self.text = s
+
+    async def _draw_volume(self, interval=0.5):
+        """
+        This is the update-mainloop: Check if 'self.text' has changed and if so display for requested time
+        Args:
+            interval: how long this loop pauses before checking / drawing
+        """
+        while await asyncio.sleep(interval, True):
+            if self.startup_text is not None:
+                self.label.config(text=self.startup_text.text)
+                await asyncio.sleep(self.startup_text.delay)
+                self.label.config(text='')
+                self.startup_text = None
+            if self.text is not None:
+                self.label.config(text=self.text.text)
+                tmp_delay = self.text.delay  # need to tmp store bc need to None immediately
+                self.text = None
+                await asyncio.sleep(tmp_delay)
+                self.label.config(text='')
 
 
 class DisplayWindows(AsyncTK):
