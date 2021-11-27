@@ -12,10 +12,7 @@ from collections import namedtuple
 from random import randint
 from typing import Callable
 
-import pywintypes
 import upnpclient as upnpclient
-import win32api
-import win32con
 from async_upnp_client import UpnpFactory
 from async_upnp_client.aiohttp import AiohttpRequester
 
@@ -90,7 +87,7 @@ class FakeRequester:
 Dtext = namedtuple('Dtext', 'text delay')
 
 
-class Display(tk.Tk):
+class DisplayWindows(tk.Tk):
     """
     This class paints text on top of applications using pywin and tkinter.
 
@@ -121,6 +118,10 @@ class Display(tk.Tk):
         label.master.wm_attributes("-topmost", True)
         label.master.wm_attributes("-topmost", False)
         label.master.wm_attributes("-transparentcolor", "black")
+
+        import pywintypes
+        import win32api
+        import win32con
 
         hWindow = pywintypes.HANDLE(int(label.master.frame(), 16))
         # http://msdn.microsoft.com/en-us/library/windows/desktop/ff700543(v=vs.85).aspx
@@ -178,7 +179,7 @@ class VolumeCtrl:
         loop = asyncio.get_event_loop()
         self.requester = UpnpRequester(loop, self.volume_callback)
         # self.requester = FakeRequester(loop, self.volume_callback)
-        self.display = Display(loop)
+        self.display = DisplayWindows(loop)
         loop.run_forever()
         loop.close()
 
