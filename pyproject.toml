@@ -12,6 +12,14 @@ upnpclient = "^1.0.3"
 
 [tool.poetry.dev-dependencies]
 
+# A list of all of the optional dependencies, some of which are included in the
+# below `extras`. They can be opted into by apps.
+pypiwin32 = { version = "^223", optional = true }
+
+[tool.poetry.extras]
+windows = ["pywin32"]
+
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
