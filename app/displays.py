@@ -37,7 +37,7 @@ class DisplayPi(AsyncTK):
 
     def __init__(self, loop):
         super().__init__(loop)
-        self.tasks.append(loop.create_task(self._updater(0.05)))
+        self.tasks.append(loop.create_task(self._draw_volume()))
 
         self.attributes("-fullscreen", True)
         self.configure(background='black')
@@ -50,11 +50,8 @@ class DisplayPi(AsyncTK):
         self.text: Optional[Dtext] = None
 
         fnt = Font(family='Helvetica', size=128, weight='bold')
-        # txt = tkinter.StringVar()
-        self.label = ttk.Label(self, text='', font=fnt, foreground="green", background="black")
-        self.place(relx=0.5, rely=0.5, anchor="center")
-        # self.label = txt
-        # self.label.set("Drrsch.")
+        self.label = ttk.Label(self, text='asdf', font=fnt, foreground="green", background="black")
+        self.label.place(relx=0.5, rely=0.5, anchor="center")
 
     def set_text(self, s: Dtext):
         print(s)
@@ -100,7 +97,6 @@ class DisplayWindows(AsyncTK):
         self.loop = loop
         self.tasks = []
         self.tasks.append(loop.create_task(self._draw_volume()))
-        self.tasks.append(loop.create_task(self._updater(0.05)))
         self.startup_text: Dtext = Dtext('Starting up volume ctrl', 2)
         self.text: Dtext = None
 
