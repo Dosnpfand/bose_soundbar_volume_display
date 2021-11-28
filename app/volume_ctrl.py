@@ -34,10 +34,10 @@ class UpnpRequester:
             if self.soundbar is None:
                 devices = upnpclient.discover()
                 for d in devices:
-                    if d.model_name == 'Bose Soundbar 700':
+                    if 'bose' in d.model_name:
                         print(f"Soundbar discovered: {d.device_name}")
                         self.soundbar = d
-                print("Soundbar 700 not found, retrying...")
+                print("Soundbar not found, retrying...")
             await asyncio.sleep(2)
 
     async def volume_loop(self, cb_func):
