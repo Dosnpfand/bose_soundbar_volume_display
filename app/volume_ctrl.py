@@ -34,7 +34,8 @@ class UpnpRequester:
             if self.soundbar is None:
                 devices = upnpclient.discover()
                 for d in devices:
-                    if 'bose' in d.model_name:
+                    print(f"checking device: {d.device_name}")
+                    if 'bose' in d.model_name.lower():
                         print(f"Soundbar discovered: {d.device_name}")
                         self.soundbar = d
                 print("Soundbar not found, retrying...")
