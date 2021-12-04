@@ -9,4 +9,3 @@ RUN cd /bose &&  /root/.poetry/bin/poetry install --no-root
 # copy application: this is quite fast
 COPY app/ /bose/app
 CMD cd /bose && /root/.poetry/bin/poetry run python /bose/app/volume_ctrl.py
-

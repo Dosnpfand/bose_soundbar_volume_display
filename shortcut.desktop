@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Volume Control
+Comment=Dockerized VC
+Icon=/usr/share/pixmaps/openbox.xpm
+Exec=docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" soundbar_vol:latest
+Type=Application
+Encoding=UTF-8
+Terminal=false
+Categories=None;
