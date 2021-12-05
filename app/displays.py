@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import time
 import tkinter
 import tkinter as tk
@@ -54,7 +55,7 @@ class DisplayPi(AsyncTK):
         self.label.place(relx=0.5, rely=0.5, anchor="center")
 
     def set_text(self, s: Dtext):
-        print(s)
+        logging.getLogger("vc").debug(s)
         self.text = s
 
     async def _draw_volume(self, interval=0.5):

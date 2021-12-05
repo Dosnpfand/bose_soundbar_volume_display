@@ -15,6 +15,7 @@ from async_upnp_client import UpnpFactory
 from async_upnp_client.aiohttp import AiohttpRequester
 
 from displays import DisplayWindows, DisplayPi, Dtext
+import logging
 
 
 class UpnpRequester:
@@ -34,11 +35,11 @@ class UpnpRequester:
             if self.soundbar is None:
                 devices = upnpclient.discover()
                 for d in devices:
-                    print(f"checking device: {d.device_name}")
+                    logging.getLogger("vc").debug(f"checking device: {d.device_name}")
                     if 'bose' in d.model_name.lower():
-                        print(f"Soundbar discovered: {d.device_name}")
+                        logging.getLogger("vc").info(f"Soundbar discovered: {d.device_name}")
                         self.soundbar = d
-                print("Soundbar not found, retrying...")
+                logging.getLogger("vc").warning("Soundbar not found, retrying...")
             await asyncio.sleep(2)
 
     async def volume_loop(self, cb_func):
@@ -51,7 +52,7 @@ class UpnpRequester:
         while True:
             if self.soundbar is not None:
                 if get_volume is None:
-                    print("creating device...")
+                    logging.getLogger("vc").info("Creating device...")
                     # create the factory
                     requester = AiohttpRequester()
                     factory = UpnpFactory(requester)
@@ -61,7 +62,7 @@ class UpnpRequester:
                     service = device.service('urn:schemas-upnp-org:service:RenderingControl:1')
                     # perform GetVolume action
                     get_volume = service.action('GetVolume')
-                    print("done.")
+                    logging.getLogger("vc").info("DEvice and Volume Request Service created.")
 
                 try:
                     result = await get_volume.async_call(InstanceID=0, Channel='Master')
@@ -90,20 +91,47 @@ class VolumeCtrl:
     Main Class that holds the requester and a Display.
     """
     def __init__(self):
+        self._setup_logging()
         self.last_volume: int = 0
         loop = asyncio.get_event_loop()
         self.requester = UpnpRequester(loop, self.volume_callback)
         # self.requester = FakeRequester(loop, self.volume_callback)
 
         if os.name == 'nt':
-            print("Windows detected")
+            logging.getLogger().info("Windows detected")
             self.display = DisplayWindows(loop)
         elif os.name == 'posix':
-            print("Linux detected")
+            logging.getLogger("vc").info("Linux detected")
             self.display = DisplayPi(loop)
 
         loop.run_forever()
         loop.close()
+
+    @staticmethod
+    def _setup_logging():
+        logger = logging.getLogger("vc")
+        logger.setLevel(logging.DEBUG)  # need to also set this to get output, default is WARNING
+
+        # config stream handler
+        stream_handler = logging.StreamHandler()
+        stream_handler.setLevel(logging.DEBUG)
+        stream_format = logging.Formatter('%(levelname)s - %(message)s')
+        file_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        stream_handler.setFormatter(stream_format)
+        logger.addHandler(stream_handler)
+
+        # config file-handler
+        if os.getenv('INSIDE_DOCKER', False):
+            file_handler = logging.FileHandler('/logs/logfile.log')
+        else:
+            file_handler = logging.FileHandler('logfile.log')
+
+        file_handler.setFormatter(file_format)
+        file_handler.setLevel(logging.DEBUG)
+        logger.addHandler(file_handler)
+
+        logger.debug("Logging configured")
+
 
     def volume_callback(self, vol: int):
         """
