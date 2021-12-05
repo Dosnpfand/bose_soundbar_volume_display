@@ -1,0 +1,6 @@
+#!/bin/bash
+# pull latest image from dockerhub
+docker image pull dosn/soundbar_vol:latest
+
+# execute container attaching display
+docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" dosn/soundbar_vol:latest

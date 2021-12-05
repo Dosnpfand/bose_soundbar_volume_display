@@ -3,18 +3,13 @@
 This repo contains a python based implementation to poll a bose soundbar for its volume and display it if a change was detected. 
 
 # Run it using docker
-Assumtion: Docker is already running on the pi, your user is `pi`.
-- create a script `/home/pi/bin/vc` that downloads the latest image from dockerhub and starts the container attaching it to your display:
-  - ```bash
-    docker image pull dosn/soundbar_vol:latest
-    docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" dosn/soundbar_vol:latest
-    ```
-  - `chmod +x vc`
+Assumtion: Docker is already running on the pi, your user is `pi` and this repo is checked out on `/home/pi/repos/bose_soundbar_volume_display/`
+- Create/copy the script `vc` from the repo root which pulls the latest container from dockerhub and runs it attaching the X-server
 - To have this start automatically on power on, create this file: `/home/pi/.config/autostart/vc.desktop`
 - ```
   [Desktop Entry]
   Name=vc
-  Exec=/home/pi/bin/vc
+  Exec=/home/pi/repos/bose_soundbar_volume_display/vc
   Type=application
   ```
 
