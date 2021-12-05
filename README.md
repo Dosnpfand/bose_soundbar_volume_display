@@ -34,3 +34,6 @@ When you want to run stuff directly with python.
 There is a dockerfile included. To build on the pi, run this in repo root:
 - build image: `docker build -t soundbar_vol:latest .`
 - run with mounting of display: `docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" soundbar_vol:latest`
+
+Push to registry
+

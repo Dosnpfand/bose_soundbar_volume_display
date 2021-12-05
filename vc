@@ -1,7 +1,9 @@
 #!/bin/bash
 # pull latest image from dockerhub
-export IMAGE = dosn/soundbar_vol:latest
+export IMAGE="dosn/soundbar_vol:latest"
+# export IMAGE="soundbar_vol:local"
+# docker image pull $IMAGE
 docker image pull $IMAGE
 
 # execute container attaching display
-docker run -v /home/pi/logs:logs --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" $IMAGE
+docker run -v /home/pi/logs:/logs --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" $IMAGE

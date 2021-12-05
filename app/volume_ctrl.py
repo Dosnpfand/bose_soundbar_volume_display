@@ -62,7 +62,7 @@ class UpnpRequester:
                     service = device.service('urn:schemas-upnp-org:service:RenderingControl:1')
                     # perform GetVolume action
                     get_volume = service.action('GetVolume')
-                    logging.getLogger("vc").info("DEvice and Volume Request Service created.")
+                    logging.getLogger("vc").info("Device and Volume Request Service created.")
 
                 try:
                     result = await get_volume.async_call(InstanceID=0, Channel='Master')
@@ -116,11 +116,11 @@ class VolumeCtrl:
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(logging.DEBUG)
         stream_format = logging.Formatter('%(levelname)s - %(message)s')
-        file_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         stream_handler.setFormatter(stream_format)
         logger.addHandler(stream_handler)
 
         # config file-handler
+        file_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         if os.getenv('INSIDE_DOCKER', False):
             file_handler = logging.FileHandler('/logs/logfile.log')
         else:
@@ -130,7 +130,7 @@ class VolumeCtrl:
         file_handler.setLevel(logging.DEBUG)
         logger.addHandler(file_handler)
 
-        logger.debug("Logging configured")
+        logger.debug(f"Logging configured, Inside Docker: {os.getenv('INSIDE_DOCKER', False)}")
 
 
     def volume_callback(self, vol: int):
