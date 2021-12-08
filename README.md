@@ -32,7 +32,8 @@ When you want to run stuff directly with python.
 ## Docker build 
 
 There is a dockerfile included. To build on the pi, run this in repo root:
-- build image: `docker build -t soundbar_vol:latest .`
+- build python poetry base `docker build -t dosn/soundbar_vol:latest -f docker/Dockerfile_app .` (Takes ~15mins on pi3)
+- build main image: `docker build -t dosn/soundbar_vol:latest -f docker/Dockerfile_app .`
 - run with mounting of display: `docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" soundbar_vol:latest`
 
 Push to registry

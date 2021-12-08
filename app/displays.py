@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import time
 import tkinter
 import tkinter as tk
 from collections import namedtuple
@@ -50,9 +49,15 @@ class DisplayPi(AsyncTK):
         self.startup_text: Dtext = Dtext('Pi', 2)
         self.text: Optional[Dtext] = None
 
-        fnt = Font(family='Helvetica', size=128, weight='bold')
+        logging.getLogger("vc").debug(f"width: {self.winfo_screenwidth()} height: {self.winfo_screenheight()}")
+
+        h = self.winfo_screenheight()
+        s = int(128 * h / 320)
+
+        fnt = Font(family='Helvetica', size=s, weight='bold')
         self.label = ttk.Label(self, text='asdf', font=fnt, foreground="green", background="black")
         self.label.place(relx=0.5, rely=0.5, anchor="center")
+
 
     def set_text(self, s: Dtext):
         logging.getLogger("vc").debug(s)
