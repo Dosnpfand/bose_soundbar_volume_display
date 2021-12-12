@@ -7,8 +7,10 @@ Should be implemented in a way that makes display easily exchangeable to also su
 import asyncio
 import concurrent
 import os
+import sys
 from random import randint
 from typing import Callable
+import http
 
 import upnpclient as upnpclient
 from async_upnp_client import UpnpFactory
@@ -35,9 +37,9 @@ class UpnpRequester:
             if self.soundbar is None:
                 devices = upnpclient.discover()
                 for d in devices:
-                    logging.getLogger("vc").debug(f"checking device: {d.device_name}")
+                    logging.getLogger("vc").debug(f"checking device: {d.device_name}:{d.model_name}")
                     if 'bose' in d.model_name.lower():
-                        logging.getLogger("vc").info(f"Soundbar discovered: {d.device_name}")
+                        logging.getLogger("vc").info(f"Soundbar discovered: {d.model_name}")
                         self.soundbar = d
                 logging.getLogger("vc").warning("Soundbar not found, retrying...")
             await asyncio.sleep(2)
@@ -92,6 +94,13 @@ class VolumeCtrl:
     """
     def __init__(self):
         self._setup_logging()
+        
+        if self.have_internet():
+            logging.getLogger("vc").info("We have internet connectivity")
+        else:
+            logging.getLogger("vc").warning("No internet connectivity, exiting...")
+            sys.exit(0)
+
         self.last_volume: int = 0
         loop = asyncio.get_event_loop()
         self.requester = UpnpRequester(loop, self.volume_callback)
@@ -132,6 +141,20 @@ class VolumeCtrl:
 
         logger.debug(f"Logging configured, Inside Docker: {os.getenv('INSIDE_DOCKER', False)}")
 
+    @staticmethod
+    def have_internet():
+        """
+            check connectivity to internet
+            https://stackoverflow.com/questions/3764291/how-can-i-see-if-theres-an-available-and-active-network-connection-in-python
+        """
+        conn = http.client.HTTPSConnection("8.8.8.8", timeout=5)
+        try:
+            conn.request("HEAD", "/")
+            return True
+        except Exception:
+            return False
+        finally:
+            conn.close()
 
     def volume_callback(self, vol: int):
         """
