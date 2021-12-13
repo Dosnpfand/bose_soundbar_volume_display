@@ -17,7 +17,7 @@ from async_upnp_client import UpnpFactory
 from async_upnp_client.aiohttp import AiohttpRequester
 
 from displays import DisplayWindows, DisplayPi, Dtext
-import logging
+import logging_tools
 
 
 class UpnpRequester:

@@ -1,5 +1,5 @@
 import asyncio
-import logging
+import logging_tools
 import tkinter
 import tkinter as tk
 from collections import namedtuple
