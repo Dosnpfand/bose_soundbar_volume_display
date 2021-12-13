@@ -1,0 +1,7 @@
+FROM python:3.8-slim-buster
+
+RUN pip3 install fastapi uvicorn
+WORKDIR /app
+COPY logserver/logserver.py /app
+
+CMD [ "python3", "logserver.py"]
