@@ -1,4 +1,8 @@
+import os
+from pathlib import Path
+
 from fastapi import HTTPException
+from fastapi.responses import HTMLResponse
 
 import uvicorn
 from fastapi import FastAPI
@@ -6,6 +10,8 @@ from pydantic import BaseModel
 from starlette import status
 
 app = FastAPI()
+
+valid_ids = os.getenv('VALID_IDS', '').split(',')  # comma separated, e.g. "id1,id2,id3"
 
 
 @app.get("/")
@@ -20,7 +26,16 @@ class LogEntry(BaseModel):
 
 @app.post("/log")
 def log(data: LogEntry):
-    if data.identifier == "stef":
+    if data.identifier in valid_ids:
+
+        if os.getenv('INSIDE_DOCKER', False):
+            fpath = '/logs/' + data.identifier + '.log'
+        else:
+            fpath = data.identifier + '.log'
+
+        with open(fpath, 'a') as f:
+            f.write(f"{data.payload}\n")
+
         print(f"payload: {data.payload}")
         return {"status": "success"}
     else:
@@ -29,5 +44,27 @@ def log(data: LogEntry):
         )
 
 
+@app.get("/logs/", response_class=HTMLResponse)
+def read_item(identifier: str):
+
+    if identifier in valid_ids:
+        if os.getenv('INSIDE_DOCKER', False):
+            fpath = Path('/logs/' + identifier + '.log')
+        else:
+            fpath = Path(identifier + '.log')
+
+        if fpath.exists():
+            with open(fpath, 'r') as f:
+                lines = f.readlines()
+
+            return '<br>'.join(lines)
+        else:
+            return "Nothing logged yet."
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="unknown identifier",
+        )
+
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=80)

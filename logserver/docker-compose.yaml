@@ -2,6 +2,8 @@ version: '3'
 services:
     logservice:
         image: logserver
+        environment:
+            - VALID_IDS=comma,separated
         networks:
             - default
         labels:
