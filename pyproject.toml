@@ -6,7 +6,7 @@ authors = ["dominicmai <dr.dosn@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 async-upnp-client = "^0.22.12"
 upnpclient = "^1.0.3"
 

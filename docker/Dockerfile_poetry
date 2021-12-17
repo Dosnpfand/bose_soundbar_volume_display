@@ -1,8 +1,15 @@
-FROM arm32v7/python:3.7-bullseye
+FROM arm32v7/python:3.9-bullseye
 
 # install poetry and then python deps using poetry: this takes ~15min
-RUN apt-get install libxml2-dev libxslt-dev
-RUN pip install --upgrade pip
+RUN apt-get update && apt-get upgrade -y
+# rustc
+RUN apt-get -y install python3-dev libxml2-dev libxslt-dev
+RUN pip3 install --upgrade pip
+
+# somehow needed for poetry, newer versions enforce rust compilation
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
+RUN pip3 install cryptography==3.4.6 
+RUN pip3 install poetry
+#RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
 COPY poetry.lock pyproject.toml poetry.toml /bose/
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-RUN cd /bose &&  /root/.poetry/bin/poetry install --no-root
+RUN cd /bose &&  poetry install --no-root

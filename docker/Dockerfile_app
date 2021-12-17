@@ -1,6 +1,6 @@
-FROM poetry_base    
+FROM poetry_base:py39   
 # for python script to check if inside docker
 ENV INSIDE_DOCKER yes  
 # copy application: this is quite fast
 COPY app/ /bose/app
-CMD cd /bose && /root/.poetry/bin/poetry run python /bose/app/volume_ctrl.py
+CMD cd /bose && poetry run python /bose/app/volume_ctrl.py
