@@ -1,5 +1,5 @@
 import asyncio
-import logging_tools
+import logging
 import tkinter
 import tkinter as tk
 from collections import namedtuple
@@ -12,7 +12,7 @@ Dtext = namedtuple('Dtext', 'text delay')
 
 class AsyncTK(tk.Tk):
     """
-    Helper class that replaces the tkinter mainlool by an async powered version.
+    Helper class that replaces the tkinter mainloop by an async powered version.
     """
 
     def __init__(self, loop):

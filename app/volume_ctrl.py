@@ -17,7 +17,8 @@ from async_upnp_client import UpnpFactory
 from async_upnp_client.aiohttp import AiohttpRequester
 
 from displays import DisplayWindows, DisplayPi, Dtext
-import logging_tools
+from logging_tools import RestHandler
+import logging
 
 
 class UpnpRequester:
@@ -138,6 +139,15 @@ class VolumeCtrl:
         file_handler.setFormatter(file_format)
         file_handler.setLevel(logging.DEBUG)
         logger.addHandler(file_handler)
+
+        #http Handler
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        if os.getenv('REMOTE_LOG', False) and os.getenv('LOG_TOKEN', False):
+            http_handler = RestHandler(os.getenv('REMOTE_LOG'), os.getenv('LOG_TOKEN'))
+            http_handler.setLevel(logging.DEBUG)
+            http_handler.setFormatter(formatter)
+            logger.addHandler(http_handler)
+
 
         logger.debug(f"Logging configured, Inside Docker: {os.getenv('INSIDE_DOCKER', False)}")
 

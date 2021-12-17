@@ -4,15 +4,15 @@ import logging
 import requests
 
 
-class CustomHandler(logging.Handler):
-    def __init__(self):
+class RestHandler(logging.Handler):
+    def __init__(self, url, token):
+        self.url = url
+        self.token = token
         super().__init__()
 
     def emit(self, record):
         log_entry = self.format(record)
-        # url = 'http://127.0.0.1:8000/log'
-        url = 'https://logs.wombatbau.de/log'
-        response = requests.post(url, json={'identifier': "stef", 'payload': log_entry})
+        response = requests.post(self.url, json={'identifier': self.token, 'payload': log_entry})
         print(response)
         return response
 
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     # }))
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    http_handler = CustomHandler()
+    http_handler = RestHandler('https://logs.wombatbau.de/log', 'stef')
     http_handler.setLevel(logging.DEBUG)
     http_handler.setFormatter(formatter)
 
