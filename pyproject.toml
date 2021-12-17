@@ -15,6 +15,8 @@ upnpclient = "^1.0.3"
 # A list of all of the optional dependencies, some of which are included in the
 # below `extras`. They can be opted into by apps.
 pypiwin32 = { version = "^223", optional = true }
+fastapi = "^0.70.1"
+uvicorn = "^0.16.0"
 
 [tool.poetry.extras]
 windows = ["pywin32"]
