@@ -13,7 +13,6 @@ class RestHandler(logging.Handler):
     def emit(self, record):
         log_entry = self.format(record)
         response = requests.post(self.url, json={'identifier': self.token, 'payload': log_entry})
-        print(response)
         return response
 
 

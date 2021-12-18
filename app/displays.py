@@ -55,7 +55,7 @@ class DisplayPi(AsyncTK):
         s = int(128 * h / 320)
 
         fnt = Font(family='Helvetica', size=s, weight='bold')
-        self.label = ttk.Label(self, text='asdf', font=fnt, foreground="green", background="black")
+        self.label = ttk.Label(self, text='drrrsch', font=fnt, foreground="lightgray", background="black")
         self.label.place(relx=0.5, rely=0.5, anchor="center")
 
 
