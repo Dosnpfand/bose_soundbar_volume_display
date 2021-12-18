@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from fastapi import HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import PlainTextResponse
 
 import uvicorn
 from fastapi import FastAPI
@@ -44,7 +44,7 @@ def log(data: LogEntry):
         )
 
 
-@app.get("/logs/", response_class=HTMLResponse)
+@app.get("/logs/", response_class=PlainTextResponse)
 def read_item(identifier: str):
 
     if identifier in valid_ids:
@@ -55,9 +55,8 @@ def read_item(identifier: str):
 
         if fpath.exists():
             with open(fpath, 'r') as f:
-                lines = f.readlines()
-
-            return '<br>'.join(lines)
+                lines = f.read()
+            return lines
         else:
             return "Nothing logged yet."
     else:
